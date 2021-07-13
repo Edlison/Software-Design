@@ -6,7 +6,7 @@ from flask import g, session, make_response
 
 
 app = init_app()
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins='*')
 
 
 @app.after_request
