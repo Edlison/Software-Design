@@ -3,13 +3,30 @@
 from backend.api.chat import chat_bp
 from backend.filter.login_filter import need_login
 from backend.result.system_result import SystemResult
-from flask import request, session, g, render_template, jsonify
+from flask import request, session, g, render_template, jsonify, make_response
 from app import socketio
 
 
 @chat_bp.route('/')
 def index():
     return render_template('index.html')
+
+
+@chat_bp.route('/u1')
+def u1():
+    return render_template('user1.html')
+
+
+@chat_bp.route('/u2')
+def u2():
+    return render_template('user2.html')
+
+
+@chat_bp.after_app_request
+def set_header(resp):
+    resp = make_response(resp)
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 
 @chat_bp.route('/room', methods=['POST'])

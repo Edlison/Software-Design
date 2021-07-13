@@ -9,18 +9,19 @@ app = init_app()
 socketio = SocketIO(app)
 
 
+@socketio.on('init event')
+def connet(data):
+    room_id = data['room_id']
+    join_room(room_id)
+
+
 @socketio.on('send event')
 def pair_chat(data):
     print('data ', data)
+    user_name = data['user_name']
     msg = data['msg']
     room_id = data['room_id']
-    user_name = session.get('user_name')
-    join_room(room_id)
-    print('msg ', msg)
-    print('room_id ', room_id)
-    if not user_name:
-        user_name = 'default'
-    print('user name ', user_name)
+
     ret_data = {
         'user_name': user_name,
         'message': msg
