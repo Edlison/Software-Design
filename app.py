@@ -2,11 +2,18 @@
 # @Date    : 7/12/21 10:04
 from backend.api import init_app
 from flask_socketio import SocketIO, emit, join_room
-from flask import g, session
+from flask import g, session, make_response
 
 
 app = init_app()
 socketio = SocketIO(app)
+
+
+@app.after_request
+def set_header(resp):
+    resp = make_response(resp)
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 
 @socketio.on('init event')
