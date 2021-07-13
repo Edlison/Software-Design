@@ -46,6 +46,7 @@ def login():
         session['user_id'] = g.user_id
         session['user_name'] = user_name
         res.ok('login success.')
+        res.set_data({'user_id': g.user_id})
     else:
         res.error('username or password error.')
     return jsonify(dict(res))

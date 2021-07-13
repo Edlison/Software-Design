@@ -9,36 +9,47 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
 
 <body>
-    <button id="connect">connect</button>
+<button id="connect">connect</button>
 
-    <button id="send">send</button>
+<button id="send">send</button>
 
-    <div id="log"></div>
+<div id="log"></div>
 </body>
 
 <script>
-    var socket = io.connect('http://0.0.0.0:5000/chatroom');
+    var socket = io.connect('http://0.0.0.0:5000');
     var room_id = '3993d26c-7388-4a79-b885-33f43d1b1329'
 
     $('#connect').click(function () {
         $.ajax({
             url: 'http://0.0.0.0:5000/api/chat/room',
             method: 'POST',
-            data: JSON.stringify({'room_id': room_id})
+            data: {
+                'room_id': room_id
+            }
         })
     })
 
     socket.on('connect', function () {
-        console.log('connected.')
+        // console.log('connected.')
+        // socket.emit('send event', {'msg': 'connected.'})
     });
 
     $('#send').click(function () {
-        // socket.broadcast.to(room_id).emit('send event', {'msg': 'shhsshhsshshhs'})
-        socket.broadcast.in(room_id).emit('send event', {'msg': 'shshhssshsh'})
-        // socket.emit('send event', {'msg': 'hshshhshshshs'})
+        console.log('sending...')
+        socket.emit('send event', {'msg': 'hshshhshshshs', 'room_id': room_id})
+        console.log('sent')
+        // $.ajax({
+        //     url: 'http://0.0.0.0:5000/api/chat/send',
+        //     method: 'POST',
+        //     success: function (data) {
+        //         console.log(data)
+        //     }
+        // })
     })
 
     socket.on('receive event', function (data) {
+        console.log(data)
         console.log(data.username, data.message, data.time)
         $('#log').append('<br>' + $('<div/>').text(data.message).html())
     })
