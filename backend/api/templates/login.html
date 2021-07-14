@@ -19,7 +19,7 @@
             padding: 13px;
             position: absolute;
             left: 50%;
-            top: 70%;
+            top: 50%;
             margin-left: -200px;
             margin-top: -200px;
             border-radius: 10px;
@@ -68,31 +68,24 @@
 </head>
 
 <body>
-<div class="jumbotron">
-    <div class="container">
-        <h1>Chat Room</h1>
-        <p>A simple chat software. Let you experience different chat.</p>
-    </div>
-</div>
-
 <div id="login_frame">
+    <div class="page-header">
+        <h1>Login <small>Have fun</small></h1>
+    </div>
+
     <form>
         <div class="input-group">
             <span class="input-group-addon" id="basic-addon1">用户名:</span>
             <input id="username" type="text" class="form-control" placeholder="Username"
                    aria-describedby="basic-addon1">
         </div>
-
         <div style="height: 10px"></div>
-
         <div class="input-group">
             <span class="input-group-addon" id="basic-addon2">密　码:</span>
             <input id="password" type="password" class="form-control" placeholder="password"
                    aria-describedby="basic-addon1">
         </div>
-
         <div style="height: 20px"></div>
-
         <div id="login_control">
             <div style="left: 20%; position: absolute">
                 <div class="btn-group" role="group" aria-label="...">
@@ -124,7 +117,7 @@
                 if (res.status == 0) {
                     window.localStorage.setItem("user_name:", $('#username').val());
                     window.localStorage.setItem("user_id:", res.data.user_id);
-                    window.location.href = '/welcome';
+                    window.location.href = '/chatroom';
                 } else {
                     alert(res.msg);
                 }

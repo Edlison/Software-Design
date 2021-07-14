@@ -16,6 +16,11 @@ def set_header(resp):
     return resp
 
 
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
+
+
 @app.route('/login', methods=['GET'])
 def login():
     return render_template('login.html')
@@ -26,9 +31,9 @@ def reg():
     return render_template('register.html')
 
 
-@app.route('/welcome', methods=['GET'])
+@app.route('/chatroom', methods=['GET'])
 def welcome():
-    return render_template('welcome.html')
+    return render_template('chatroom.html')
 
 
 @socketio.on('init event')

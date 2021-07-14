@@ -7,21 +7,6 @@ from flask import request, session, g, render_template, jsonify
 from app import socketio
 
 
-@chat_bp.route('/')
-def index():
-    return render_template('index.html')
-
-
-@chat_bp.route('/u1')
-def u1():
-    return render_template('user1.html')
-
-
-@chat_bp.route('/u2')
-def u2():
-    return render_template('user2.html')
-
-
 @chat_bp.route('/room', methods=['POST'])
 def init_room():
     user_id = session.get('user_id')
