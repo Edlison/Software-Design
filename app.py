@@ -2,7 +2,7 @@
 # @Date    : 7/12/21 10:04
 from backend.api import init_app
 from flask_socketio import SocketIO, emit, join_room
-from flask import g, session, make_response
+from flask import g, session, make_response, render_template
 
 
 app = init_app()
@@ -16,6 +16,21 @@ def set_header(resp):
     return resp
 
 
+@app.route('/login', methods=['GET'])
+def login():
+    return render_template('login.html')
+
+
+@app.route('/register', methods=['GET'])
+def reg():
+    return render_template('register.html')
+
+
+@app.route('/welcome', methods=['GET'])
+def welcome():
+    return render_template('welcome.html')
+
+
 @socketio.on('init event')
 def connet(data):
     room_id = data['room_id']
@@ -25,7 +40,7 @@ def connet(data):
 @socketio.on('send event')
 def pair_chat(data):
     print('data ', data)
-    user_name = data['user_name']
+    user_name = session.get('user_name')
     msg = data['msg']
     room_id = data['room_id']
 

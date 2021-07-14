@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <style>
+        body {
+
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+        #login_frame {
+            width: 400px;
+            height: 260px;
+            padding: 13px;
+
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -200px;
+            margin-top: -200px;
+
+            background-color: rgba(240, 255, 255, 0.5);
+
+            border-radius: 10px;
+            text-align: center;
+        }
+
+
+        form p > * {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+
+        .label_input {
+            font-size: 14px;
+            font-family: 宋体;
+
+            width: 65px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+
+            color: white;
+            background-color: #3CD8FF;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+
+        .text_field {
+            width: 278px;
+            height: 28px;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            border: 0;
+        }
+
+        #btn_login {
+            font-size: 14px;
+            font-family: 宋体;
+
+            width: 120px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+
+            color: white;
+            background-color: #3BD9FF;
+            border-radius: 6px;
+            border: 0;
+
+            float: left;
+        }
+
+        #btn_register {
+            font-size: 14px;
+            font-family: 宋体;
+
+            width: 120px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+
+            color: white;
+            background-color: #3BD9FF;
+            border-radius: 6px;
+            border: 0;
+
+            float: right;
+        }
+
+        #forget_pwd {
+            font-size: 12px;
+            color: black;
+            text-decoration: none;
+            position: relative;
+            margin-right: 30px;
+            float: right;
+            top: 30px;
+
+        }
+
+        #forget_pwd:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        #forget_div {
+            width: 400px;
+            height: 30px;
+        }
+
+        #login_control {
+            margin-left: 27px;
+            margin-right: 28px;
+            padding: 0 0px;
+            width: 346px;
+            height: 40px;
+        }
+    </style>
+
+
+</head>
+
+<body>
+<div id="login_frame">
+
+    <p id="logo_words">欢迎登录</p>
+
+    <form method="post" action="login.js">
+
+        <p><label class="label_input">用户名</label><input type="text" id="username" class="text_field"/></p>
+        <p><label class="label_input">密码</label><input type="password" id="password" class="text_field"/></p>
+
+        <div id="login_control">
+            <input type="button" id="btn_login" value="登录" onclick="login();"/>
+            <input type="button" id="btn_register" value="注册" onclick="register();"/>
+        </div>
+    </form>
+    <div id="forget_div">
+        <a id="forget_pwd" href="forget_pwd.html">忘记密码？</a>
+    </div>
+</div>
+
+</body>
+<script>
+    var IP = 'http://0.0.0.0:5000'
+
+    function login() {
+        var username = document.getElementById("username").value.toString();
+        alert(username);
+        var password = document.getElementById("password").value.toString();
+        var data = {'user_name': username, 'user_password': password}
+        $.ajax({
+            url: IP + '/api/user/login',
+            method: 'POST',
+            data: data,
+            success: function (res) {
+                if (res.status == 0) {
+                    window.localStorage.setItem("username:", $('#username').val());
+                    window.localStorage.setItem("user_id:", res.data.user_id);
+
+                    window.location.href = "welcome.html";
+                } else {
+                    alert(res.msg);
+                }
+            },
+            error: function () {
+                alert("连接服务器失败，请检查网络连接");
+            }
+        })
+    }
+
+    function register() {
+        window.location.href = "register.html";
+    }
+</script>
+</html>

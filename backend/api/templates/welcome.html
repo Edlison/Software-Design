@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+
+    <style>
+        html, body {
+            height: 100%;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        #div_head {
+            height: 8%;
+            width: 100%;
+            margin: 0px;
+            padding: 0;
+            border: 0;
+            background-color: #3CD8FF;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+
+        #ul_head {
+            margin: 20px;
+            padding: 0;
+            position: absolute;
+            left: 0px;
+            top: 50px;
+            background-co: white;
+        }
+
+        #div_con {
+            width: 20%;
+            height: 92%;
+            float: left;
+            position: absolute;
+            top: 8%;
+            margin: 0px;
+            padding: 0;
+            border: 0;
+            background: gray;
+        }
+
+        #div_msg {
+            position: absolute;
+            top: 8%;
+            left: 20%;
+            width: 80%;
+            height: 62%;
+            float: right;
+            margin: 0;
+            padding: 0px 0 0 0;
+            border: 0;
+            background: beige;
+        }
+
+        #div_edit {
+            position: absolute;
+            top: 70%;
+            left: 20%;
+            width: 80%;
+            height: 25.5%;
+            float: right;
+            margin: 0;
+            padding: 30px 0 0 0;
+            border: 0;
+            background: gainsboro;
+        }
+
+        .contacts {
+
+        }
+
+        div#id_con h2, div#sidebar h2 {
+            align-content: center;
+            font-size: 10px;
+            margin: 0;
+            padding: 10px 0 5px 10px;
+            color: #000;
+            display: block;
+            border-bottom: 0px solid #ddd;
+            font-family: '微软雅黑';
+        }
+
+        .head_title {
+            text-align: center;
+            font-size: 25px;
+            background: gainsboro;
+            border: 1px solid #000000;;
+        }
+
+        #div_tools {
+            position: absolute;
+            top: 0%;
+            width: 100%;
+            height: 15%;
+            background: white;
+        }
+
+        #div_send {
+            position: absolute;
+            top: 80%;
+            width: 100%;
+            height: 20%;
+            background: white;
+        }
+
+        .app-title {
+            margin-top: 0%;
+            text-align: center;
+            color: transparent;
+            font-weight: bold;
+            background: linear-gradient(45deg, rgba(255, 85, 127, 1) 100%, rgba(170, 85, 127, .4) 0%);
+            -webkit-background-clip: text;
+        }
+
+        .paper {
+            height: 100%;
+            position: relative;
+            margin: 0px;
+            padding: 0px 0;
+            border: 1px solid #efefef;
+            background-color: #FFFFFD;
+            /*background-image: url('paper.png');*/
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
+        }
+
+        ::before,
+        ::after {
+            content: '';
+            z-index: -1;
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+            width: 45%;
+            height: 55%;
+            max-height: 100px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transform: skew(-15deg) rotate(-4deg);
+        }
+
+        ::after {
+            left: auto;
+            right: 10px;
+            transform: skew(15deg) rotate(4deg);
+        }
+
+
+        .text_field {
+            width: 60%;
+            height: 40%;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            border: 0;
+        }
+
+        .inputBox {
+            position: absolute;
+            top: 15%;
+            left: 0%;
+            right: auto;
+            height: 65%;
+            width: 100%;
+            z-index: 999;
+        }
+
+        #btn_send {
+            font-size: 14px;
+            font-family: 宋体;
+
+            width: 120px;
+            height: 28px;
+            margin: 8px;
+            line-height: 28px;
+            text-align: center;
+
+            color: white;
+            background-color: #3BD9FF;
+            border-radius: 6px;
+            border: 0;
+
+            float: right;
+        }
+
+        #btn_close {
+            font-size: 14px;
+            font-family: 宋体;
+
+            width: 120px;
+            height: 28px;
+            margin: 8px;
+            line-height: 28px;
+            text-align: center;
+
+            color: white;
+            background-color: #3BD9FF;
+            border-radius: 6px;
+            border: 0;
+
+            float: right;
+        }
+
+        .friends_tag {
+            width: 100%;
+            height: 5%;
+            text-align: left;
+            font-size: 20px;
+            background: gainsboro;
+            border: 1px solid #000000;
+
+        }
+
+        .friend {
+            width: 100%;
+            height: 8%;
+            text-align: left;
+            font-size: 20px;
+            background: gainsboro;
+        }
+
+        .tag {
+            width: 100%;
+            height: 5%;
+            text-align: left;
+            font-size: 20px;
+            background: gainsboro;
+        }
+
+        #add_friend {
+            position: absolute;
+            width: 100%;
+            height: 10%;
+            top: 90%;
+
+        }
+
+
+    </style>
+
+</head>
+
+<body>
+<div id="container" style="width: 100%;height: 100%;">
+    <div id="div_head">
+        <div style="text-align: center;font-size: 35px ;margin: 5px">chatOnline</div>
+    </div>
+    <div id="div_con">
+        <div class="head_title" onclick="get_chat()" ondblclick="change_name()">联系人</div>
+        <div id="add_friend">
+            <input type="text" id="add_friend_id" class="text_field"/>
+            <input type="button" id="btn_add" value="添加" onclick="add();"/>
+        </div>
+    </div>
+    <div id="div_msg">
+        <div class="paper" id="div_paper">
+            <div class="app-title" id="div_app_title">可爱の{{botNick}}</div>
+        </div>
+    </div>
+    <div id="div_edit">
+        <div id="div_tools"></div>
+        <div class="inputBox">
+            <textarea style="width: 100%;height: 100%" id="msg_edit"></textarea>
+        </div>
+        <div id="div_send">
+            <input type="button" id="btn_send" value="发送" onclick="send();"/>
+            <input type="button" id="btn_close" value="关闭" onclick="close();"/>
+        </div>
+    </div>
+
+</div>
+</body>
+<script>
+    var IP = window.location.host
+
+    var socket = io.connect(IP);
+    $(document).ready(init());
+
+    var list = new Array();
+
+    function init() {
+        $.ajax({
+            url: '/api/user/get_friends_all',
+            method: 'POST',
+            success: function (res) {
+                if (res.status == 0) {
+                    list = res.data;
+                    var tags = new Array();
+                    var a = 1;
+                    tags[0] = list[0].friend_tag;
+                    for (var i = 0; i < list.length; i++) {
+                        for (var j = 0; j < a; j++) {
+                            if (list[i].friend_tag == tags[j]) {
+                                if (i == 0) {
+                                    $('#div_con').append('' +
+                                        '<div class ="friend_tag" id="' + list[i].friend_tag + '">' +
+                                        '<div class="tag" id="' + list[i].friend_tag + '" ondblclick="change_name(this.id)">' + list[i].friend_tag + '分组</div>' +
+                                        '</div>');
+                                } else {
+                                    break;
+                                }
+                            } else if (j == a - 1) {
+                                tags[a] = list[i].friend_tag;
+                                a++;
+                                $('#div_con').append('' +
+                                    '<div class ="friend_tag" id="' + list[i].friend_tag + '">' +
+                                    '<div class="tag" id="' + list[i].friend_tag + '" >' + list[i].friend_tag + '分组</div>' +
+                                    '</div>');
+                            }
+                        }
+                    }
+                    var name;
+                    var chat_id;
+                    for (let k = 0; k < list.length; k++) {
+                        $.ajax({
+                            url: '/api/user/get_user_name',
+                            method: 'POST',
+                            data: {
+                                'id': list[k].friend_id
+                            },
+                            success: function (res) {
+                                if (res.status == 0) {
+                                    name = res.data.user_name;
+                                    $("#" + list[k].friend_tag).append('<div class="friend"  id="' + list[k].friend_id + '" value="' + list[k].room_id + '" onclick="get_chat(this.id);" ondblclick="change_friend_tag(this.id);">' + name + '</div>');
+                                }
+                            },
+                            error: function () {
+                                alert("网络连接失败")
+                            }
+                        })
+                    }
+                } else {
+                    alert("fail");
+                }
+            },
+            error: function () {
+                alert("网络连接失败")
+            }
+        })
+    }
+
+    function add() {
+        var friend_id = document.getElementById("add_friend_id").value.toString();
+        var data = {'friend_id': friend_id}
+        $.ajax({
+            url: '/api/user/add_friend',
+            method: 'POST',
+            data: data,
+            success: function (res) {
+                console.log(res)
+                if (res.status == 0) {
+                    var name;
+                    $.ajax({
+                        url: '/api/user/get_user_name',
+                        method: 'POST',
+                        data: data,
+                        success: function (res) {
+                            if (res.status == 0) {
+                                // TODO refresh
+                                init();
+                            }
+                        },
+                        error: function () {
+                            alert("网络连接失败")
+                        }
+                    })
+                } else {
+                    alert(res.msg);
+                }
+            },
+            error: function () {
+                alert("连接服务器失败，请检查网络连接");
+            }
+        })
+
+    }
+
+    var time = null;
+
+    //单击事件
+    function get_chat(id) {
+        let chat_name
+        clearTimeout(time);
+        time = setTimeout(() => {
+            $.ajax({
+                url: '/api/user/get_user_name',
+                method: 'POST',
+                data: {
+                    'id': id
+                },
+                success: function (res) {
+                    if (res.status == 0) {
+                        chat_name = res.data.user_name
+                        $('#div_paper').replaceWith("<div class='paper' id='div_paper'><div class='app-title' id='div_app_title'>" + chat_name + "</div></div>");
+                    }
+                },
+                error: function () {
+                    alert("网络连接失败")
+                }
+            })
+
+            var room_id = document.getElementById(id).getAttribute("value");
+            window.localStorage.setItem("room_id", room_id);
+            socket.emit('init event', {'room_id': room_id});
+            // document.getElementById(room_id).style.display = "none";
+
+        }, 300);
+    }
+
+    function change_friend_tag(id) {
+        clearTimeout(time);
+        var word = prompt("请输入新分组", "");
+
+        if (word === '') {
+            alert('null error.')
+            return
+        }
+
+        $.ajax({
+            url: '/api/user/change_tag',
+            data: {
+                'friend_id': id,
+                'new_tag': word,
+            },
+            method: 'POST',
+            success: function (res) {
+                if (res.status == 0) {
+                    // TODO remove
+                    init();
+                } else {
+                    alert("修改分组信息失败！");
+                }
+            },
+            error: function () {
+                alert("网络连接失败");
+            }
+        })
+
+    }
+
+    function send() {
+        socket.emit('send event', {
+            'msg': $('#msg_edit').val(),
+            'room_id': window.localStorage.getItem('room_id')
+        });
+    }
+
+    socket.on('receive event', function (data) {
+        receive_user_name = data.user_name
+        receive_msg = data.message
+        addMessageFromSelf(receive_user_name, receive_msg)
+    });
+
+    function addMessageFromSelf(user_name, message) {
+        $("#div_paper").append('<div class = "my-messages">' + user_name + ": " + message + '</div>');
+        // TODO show on each side.
+
+    }
+</script>
+</html>

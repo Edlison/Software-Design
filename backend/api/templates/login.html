@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+          integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <style>
+        body {
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+        #login_frame {
+            width: 400px;
+            height: 260px;
+            padding: 13px;
+            position: absolute;
+            left: 50%;
+            top: 80%;
+            margin-left: -200px;
+            margin-top: -200px;
+            background-color: rgba(240, 255, 255, 0.5);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        form p > * {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        #btn_login {
+            font-size: 14px;
+            font-family: 宋体;
+            width: 120px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            color: white;
+            background-color: #3BD9FF;
+            border-radius: 6px;
+            border: 0;
+            float: left;
+        }
+
+        #btn_register {
+            font-size: 14px;
+            font-family: 宋体;
+            width: 120px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            color: white;
+            background-color: #3BD9FF;
+            border-radius: 6px;
+            border: 0;
+            float: right;
+        }
+
+        #login_control {
+            margin-left: 27px;
+            margin-right: 28px;
+            padding: 0 0px;
+            width: 346px;
+            height: 40px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="jumbotron">
+    <div class="container">
+        <h1>chatOnline!</h1>
+        <p>A simple chat software. Let you experience different chat</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+    </div>
+</div>
+
+<div id="login_frame">
+    <p id="logo_words">欢迎登录</p>
+    <form>
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">用户名:</span>
+            <input id="username" type="text" class="form-control" placeholder="Username"
+                   aria-describedby="basic-addon1">
+        </div>
+
+        <div class="div_dis"></div>
+
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon2">密　码:</span>
+            <input id="password" type="password" class="form-control" placeholder="password"
+                   aria-describedby="basic-addon1">
+        </div>
+
+        <div id="login_control">
+            <div class="div_dis"></div>
+            <div class="div_dis"></div>
+            <input type="button" id="btn_login" value="登录" onclick="login();"/>
+            <input type="button" id="btn_register" value="注册" onclick="register();"/>
+        </div>
+    </form>
+</div>
+</body>
+<script>
+    const IP = window.location.host
+    console.log(IP)
+
+    function login() {
+        var username = document.getElementById("username").value.toString();
+        var password = document.getElementById("password").value.toString();
+        var data = {'user_name': username, 'user_password': password}
+        $.ajax({
+            url: '/api/user/login',
+            method: 'POST',
+            data: data,
+            success: function (res) {
+                if (res.status == 0) {
+                    window.localStorage.setItem("user_name:", $('#username').val());
+                    window.localStorage.setItem("user_id:", res.data.user_id);
+                    window.location.href = '/welcome';
+                } else {
+                    alert(res.msg);
+                }
+            },
+            error: function () {
+                alert("连接服务器失败，请检查网络连接");
+            }
+        })
+    }
+
+    function register() {
+        window.location.href = '/register';
+    }
+</script>
+</html>
