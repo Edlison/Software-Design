@@ -4,6 +4,7 @@ from backend.api.user import user_bp
 from flask import request, session, jsonify, g, render_template
 from backend.api.user.service.user_service import validate, register, add_friend, get_friends_all, update_tag, get_info, get_friend_room
 from backend.api import db
+from backend.result.system_result import SystemResult
 from backend.api.user.model.user_model import User
 from backend.api.user.model.user_relation import UserRelation
 from backend.filter.login_filter import need_login
@@ -56,6 +57,9 @@ def login():
 @need_login
 def gi():
     id = request.form.get('id')
+    if not id:
+        res = SystemResult().error('user id {} error.'.format(id))
+        return jsonify(dict(res))
     res = get_info(id)
     return jsonify(dict(res))
 

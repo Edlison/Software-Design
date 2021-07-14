@@ -5,6 +5,8 @@
     <title>注册页面</title>
 
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+          integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 
 
 </head>
@@ -25,8 +27,6 @@
         top: 50%;
         margin-left: -200px;
         margin-top: -200px;
-
-        background-color: rgba(240, 255, 255, 0.5);
 
         border-radius: 10px;
         text-align: center;
@@ -85,50 +85,80 @@
         width: 346px;
         height: 40px;
     }
-
 </style>
+
 <body>
 <div id="register_frame">
+    <div class="page-header">
+        <h1>欢迎注册 <small>Have fun</small></h1>
+    </div>
+    <form>
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">用&nbsp;&nbsp;户&nbsp;&nbsp;名:</span>
+            <input id="username" type="text" class="form-control" placeholder="Username"
+                   aria-describedby="basic-addon1">
+        </div>
 
-    <p id="logo_words">欢迎注册</p>
+        <div style="height: 10px"></div>
 
-    <form method="post" action="login.js">
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon2">密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码:</span>
+            <input id="password" type="password" class="form-control" placeholder="Password"
+                   aria-describedby="basic-addon1">
+        </div>
 
-        <p><label class="label_input">用户名</label><input type="text" id="username" class="text_field"/></p>
-        <p><label class="label_input">密码</label><input type="text" id="password" class="text_field"/></p>
-        <p><label class="label_input">确认密码</label><input type="text" id="repassword" class="text_field"/></p>
+        <div style="height: 10px"></div>
+
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon3">确认密码:</span>
+            <input id="repassword" type="password" class="form-control" placeholder="Password"
+                   aria-describedby="basic-addon1">
+        </div>
+
+        <div style="height: 20px"></div>
+
         <div id="login_control">
-            <table align="center">
-                <tr>
-                    <td>
-                        <input type="button" id="btn_register" value="注册" onclick="registerOver();" />
-                    </td>
-                </tr>
-            </table>
+            <div style="right: 40%; position: absolute">
+                <div class="btn-group" role="group" aria-label="...">
+                    <button type="button" class="btn btn-default" onclick="registerOver()">注&nbsp;&nbsp;&nbsp;&nbsp;册
+                    </button>
+                </div>
+            </div>
         </div>
     </form>
-
 </div>
 </body>
 <script>
     function registerOver() {
+        const IP = window.location.host
 
+        user_name = $('#username').val().toString()
+        password = $('#password').val().toString()
+        repassword = $('#repassword').val().toString()
 
-            var data = {'user_name':$('#username').val().toString(),'user_password':$('#password').val().toString()};
-            $.ajax({
-                url:'http://121.4.249.118:5000/api/user/register',
-                method: 'POST',
-                data:data,
-                success:function (res) {
+        if (password !== repassword) {
+            alert('两次密码输入不同')
+            return
+        }
 
-                        alert("注册成功,请登录")
-                        window.location.href="login.html";
-
-                },
-                error:function () {
-                    alert("连接服务器失败，请检查网络连接");
+        var data = {'user_name': user_name, 'user_password': password};
+        $.ajax({
+            url: '/api/user/register',
+            method: 'POST',
+            data: data,
+            success: function (res) {
+                if (res.status === 0) {
+                    alert("注册成功,请登录")
+                    window.location.href = "login";
+                } else {
+                    alert(res.msg)
+                    window.location.href = "login";
                 }
-            })
+            },
+            error: function () {
+                alert("连接服务器失败，请检查网络连接");
+            }
+        })
 
     }
 </script>
