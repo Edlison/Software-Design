@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
           integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css"
+          integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+            integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+            crossorigin="anonymous"></script>
     <style>
         html, body {
             height: 100%;
@@ -196,33 +202,39 @@
             margin: 5px;
         }
 
-        .div_image img{
+        .div_image img {
             width: 30px;
             height: 30px;
         }
-        .small_div_image img{
+
+        .small_div_image img {
             width: 20px;
             height: 20px;
         }
-        .show_image img{
-            width:40px;
+
+        .show_image img {
+            width: 40px;
             height: 40px;
         }
-        .messages{
+
+        .messages {
             width: 100%;
 
         }
-        .my_message{
+
+        .my_message {
             background: #79ff00;
             float: right;
             font-size: 25px;
         }
-        .friend_message{
+
+        .friend_message {
             float: left;
             font-size: 25px;
             background: whitesmoke;
         }
-        .clear{
+
+        .clear {
             clear: both;
         }
     </style>
@@ -264,12 +276,13 @@
 
     <div id="div_edit">
         <div id="div_tools">
-            <div class="div_image"  id ="../static/1.jpg" onclick= add_image(this.id)>
+            <div class="div_image" id="../static/1.jpg" onclick=add_image(this.id)>
                 <img src="../static/1.jpg">
             </div>
         </div>
         <div class="inputBox">
-            <div contenteditable="true" id="edit_msg_area"  class="small_div_image"  style="height: 90%;width: 100%"></div>
+            <div contenteditable="true" id="edit_msg_area" class="small_div_image"
+                 style="height: 90%;width: 100%"></div>
         </div>
         <div id="div_send">
             <div style="right: 8%; top:40%; position: absolute">
@@ -311,8 +324,7 @@
                                 if (i == 0) {
                                     $('#show_friends').append('<div>' +
                                         '<div class="list-group" id="' + list[i].friend_tag + '">'
-                                        + '<div class="list-group-item friends_tag" id="' + list[i].friend_tag
-                                        + '" ondblclick="change_name(this.id)">'
+                                        + '<div class="list-group-item friends_tag" id="' + list[i].friend_tag + '">'
                                         + '<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> '
                                         + list[i].friend_tag + '分组</div>' +
                                         '</div>' + '</div>'
@@ -344,10 +356,18 @@
                                 if (res.status == 0) {  // 添加好友
                                     name = res.data.user_name;
                                     $("#" + list[k].friend_tag).append('<div class="friend"  id="' + list[k].friend_id
-                                        + '" value="' + list[k].room_id
-                                        + '" onclick="get_chat(this.id);" ondblclick="change_friend_tag(this.id);">'
+                                        +'" value="' + list[k].room_id
+                                        +'" onclick="get_chat(this.id);"">'
                                         + name
-                                        + '<div class="btn-group btn-group-xs" role="group" aria-label="...">...</div></div>');
+                                        +'<div class="btn-group" style="right: 5%; position: absolute">' +
+                                        '<button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                                        '选项<span class="caret"></span>' +
+                                        '</button>' +
+                                        '<ul class="dropdown-menu" id="ttt">' +
+                                        '<li value="' + list[k].friend_id +'" onclick="change_friend_tag(this.value)"><a>修改分组</a></li>' +
+                                        '<li role="separator" className="divider"></li>' +
+                                        '<li value="' + list[k].friend_id +'" onclick="delete_friend(this.value)"><a>删除好友</a></li>' +
+                                        '</ul></div></div>')
                                 } else {
                                     alert(res.msg)
                                 }
@@ -419,8 +439,6 @@
             var room_id = document.getElementById(id).getAttribute("value");
             window.localStorage.setItem("room_id", room_id);
             socket.emit('init event', {'room_id': room_id});
-            // document.getElementById(room_id).style.display = "none";
-
         }, 300);
     }
 
@@ -464,7 +482,7 @@
             'room_id': window.localStorage.getItem('room_id')
         });
         $('#edit_msg_area').replaceWith('<div contentEditable="true" id="edit_msg_area" className="small_div_image"' +
-                                             'style="height: 90%;width: 100%"></div>')
+            'style="height: 90%;width: 100%"></div>')
     }
 
     socket.on('receive event', function (data) {
@@ -476,17 +494,33 @@
 
     function addMessageFromSelf(user_name, message) {
         if (window.localStorage.getItem('friend_name') === user_name) {
-            $("#div_paper").append('<div class = "messages">' +'<div class="friend_message show_image well well-sm">'+
-                message + '</div>'+'<div class="clear">'+'</div>'+'</div><br>')
+            $("#div_paper").append('<div class = "messages">' + '<div class="friend_message show_image well well-sm">' +
+                message + '</div>' + '<div class="clear">' + '</div>' + '</div><br>')
         } else {
-            $("#div_paper").append('<div class = "messages">' +'<div class="my_message show_image well well-sm">'
-                + message +'</div>'+'<div class="clear">'+'</div>'+'</div><br>')
+            $("#div_paper").append('<div class = "messages">' + '<div class="my_message show_image well well-sm">'
+                + message + '</div>' + '<div class="clear">' + '</div>' + '</div><br>')
         }
     }
 
     function add_image(id) {
-        alert(id);
-        $('#edit_msg_area').append('<div class="small_div_image">'+' <img src="'+id+'">'+'</div>');
+        $('#edit_msg_area').append('<div class="small_div_image">' + ' <img src="' + id + '">' + '</div>');
+    }
+
+    function delete_friend(friend_id) {
+        $.ajax({
+            url: '/api/user/delete_friend',
+            method: 'POST',
+            data: {
+                'friend_id': friend_id
+            },
+            success: function (res) {
+                if (res.status === 0) {
+                    window.location.reload()
+                } else {
+                    alert(res.msg)
+                }
+            }
+        })
     }
 
 </script>

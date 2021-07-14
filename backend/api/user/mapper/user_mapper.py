@@ -63,3 +63,10 @@ def update_friend_tag(user_id, friend_id, new_tag):
 def get_room_by_id(user_id, friend_id):
     relation = UserRelation.query.filter_by(user_id=user_id, friend_id=friend_id).first()
     return relation
+
+
+def delete_relation_by_id(user_id, friend_id):
+    relation = UserRelation.query.filter_by(user_id=user_id, friend_id=friend_id).first()
+    db.session.delete(relation)
+    db.session.commit()
+    return relation

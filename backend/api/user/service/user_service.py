@@ -3,7 +3,8 @@
 from flask import g
 from backend.result.system_result import SystemResult
 from backend.api.user.mapper.user_mapper import get_user_by_name_password, get_user_by_name, insert_user, \
-    insert_user_relation, get_relation_by_id, update_friend_tag, get_relations_all, get_user_by_id, get_room_by_id
+    insert_user_relation, get_relation_by_id, update_friend_tag, get_relations_all, get_user_by_id, \
+    get_room_by_id, delete_relation_by_id
 from backend.util.serialize import serialize_model_list
 from hashlib import sha256
 from uuid import uuid4
@@ -89,6 +90,16 @@ def add_friend(user_id, friend_id):
         return res.ok('add friend success.')
     else:
         return res.error('friend has existed or do not have this user.')
+
+
+def delete_friend(user_id, friend_id):
+    d1 = delete_relation_by_id(user_id, friend_id)
+    d2 = delete_relation_by_id(friend_id, user_id)
+    res = SystemResult()
+    if d1 and d2:
+        return res.ok()
+    else:
+        return res.error()
 
 
 def update_tag(user_id, friend_id, new_tag):

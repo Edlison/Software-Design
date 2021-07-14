@@ -3,7 +3,7 @@
 from backend.api.user import user_bp
 from flask import request, session, jsonify, g, render_template
 from backend.api.user.service.user_service import validate, register, add_friend, get_friends_all, update_tag,\
-    get_info, get_friend_room, get_id
+    get_info, get_friend_room, get_id, delete_friend
 from backend.api import db
 from backend.result.system_result import SystemResult
 from backend.api.user.model.user_model import User
@@ -58,7 +58,7 @@ def login():
 @need_login
 def gun():
     id = request.form.get('id')
-    if not id:
+    if not id or id == '':
         res = SystemResult().error('user id {} error.'.format(id))
         return jsonify(dict(res))
     res = get_info(id)
@@ -104,6 +104,7 @@ def af():
 
 
 @user_bp.route('/change_tag', methods=['POST'])
+@need_login
 def ct():
     user_id = session.get('user_id')
     friend_id = request.form.get('friend_id')
@@ -112,6 +113,13 @@ def ct():
     return jsonify(dict(res))
 
 
+@user_bp.route('/delete_friend', methods=['POST'])
+@need_login
+def df():
+    user_id = session.get('user_id')
+    friend_id = request.form.get('friend_id')
+    res = delete_friend(user_id, friend_id)
+    return jsonify(dict(res))
 
 
 
