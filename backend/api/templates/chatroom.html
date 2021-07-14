@@ -217,9 +217,9 @@
         <div id="add_friend">
             <div class="col-lg-12">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
+                    <input type="text" id="add_friend_name" class="form-control" placeholder="Search for...">
                     <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">Add</button>
+                    <button class="btn btn-default" type="button" onclick="add()">Add</button>
                     </span>
                 </div><!-- /input-group -->
             </div>
@@ -321,38 +321,32 @@
     }
 
     function add() {
-        var friend_id = document.getElementById("add_friend_id").value.toString();
-        var data = {'friend_id': friend_id}
+        var friend_name = document.getElementById("add_friend_name").value.toString();
+        var data = {'user_name': friend_name}
         $.ajax({
-            url: '/api/user/add_friend',
+            url: '/api/user/get_user_id',
             method: 'POST',
             data: data,
             success: function (res) {
-                console.log(res)
-                if (res.status == 0) {
-                    var name;
+                if (res.status === 0) {
                     $.ajax({
-                        url: '/api/user/get_user_name',
+                        url: '/api/user/add_friend',
                         method: 'POST',
-                        data: data,
+                        data: {'friend_id': res.data.user_id},
                         success: function (res) {
-                            if (res.status == 0) {
+                            if (res.status === 0) {
                                 location.reload()
-                                // $('#show_friends').replaceWith("<div id='show_friends'></div>");
-                                // init();
                             } else {
                                 alert(res.msg)
                             }
                         }
                     })
                 } else {
-                    alert(res.msg);
+                    alert(res.msg)
                 }
-            },
-            error: function () {
-                alert("连接服务器失败，请检查网络连接");
             }
         })
+
 
     }
 

@@ -2,7 +2,8 @@
 # @Date    : 7/12/21 17:20
 from backend.api.user import user_bp
 from flask import request, session, jsonify, g, render_template
-from backend.api.user.service.user_service import validate, register, add_friend, get_friends_all, update_tag, get_info, get_friend_room
+from backend.api.user.service.user_service import validate, register, add_friend, get_friends_all, update_tag,\
+    get_info, get_friend_room, get_id
 from backend.api import db
 from backend.result.system_result import SystemResult
 from backend.api.user.model.user_model import User
@@ -55,13 +56,25 @@ def login():
 
 @user_bp.route('/get_user_name', methods=['POST'])
 @need_login
-def gi():
+def gun():
     id = request.form.get('id')
     if not id:
         res = SystemResult().error('user id {} error.'.format(id))
         return jsonify(dict(res))
     res = get_info(id)
     return jsonify(dict(res))
+
+
+@user_bp.route('/get_user_id', methods=['POST'])
+@need_login
+def gui():
+    user_name = request.form.get('user_name')
+    if not user_name:
+        res = SystemResult().error('user name {} error.'.format(id))
+        return jsonify(dict(res))
+    else:
+        res = get_id(user_name)
+        return jsonify(dict(res))
 
 
 @user_bp.route('/get_friends_all', methods=['POST'])

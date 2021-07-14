@@ -47,6 +47,18 @@ def get_info(user_id):
     return res
 
 
+def get_id(user_name):
+    user = get_user_by_name(user_name)
+    res = SystemResult()
+    if user:
+        res.ok()
+        res.set_data({'user_id': user.user_id})
+        return res
+    else:
+        res.error('no user find.')
+        return res
+
+
 def get_friends_all(user_id):
     res = SystemResult()
     relations = get_relations_all(user_id)
@@ -91,5 +103,5 @@ def update_tag(user_id, friend_id, new_tag):
 def in_relation(user_id, friend_id):
     relation1 = get_relation_by_id(user_id, friend_id)
     relation2 = get_relation_by_id(friend_id, user_id)
-    return relation1 and relation2
+    return (relation1 and relation2) and (user_id != friend_id)
 
