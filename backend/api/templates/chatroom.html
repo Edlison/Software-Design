@@ -195,6 +195,36 @@
             top: 90%;
             margin: 5px;
         }
+
+        .div_image img{
+            width: 30px;
+            height: 30px;
+        }
+        .small_div_image img{
+            width: 20px;
+            height: 20px;
+        }
+        .show_image img{
+            width:40px;
+            height: 40px;
+        }
+        .messages{
+            width: 100%;
+
+        }
+        .my_message{
+            background: #79ff00;
+            float: right;
+            font-size: 25px;
+        }
+        .friend_message{
+            float: left;
+            font-size: 25px;
+            background: whitesmoke;
+        }
+        .clear{
+            clear: both;
+        }
     </style>
 
 </head>
@@ -233,9 +263,13 @@
     </div>
 
     <div id="div_edit">
-        <div id="div_tools"></div>
+        <div id="div_tools">
+            <div class="div_image"  id ="../static/1.jpg" onclick= add_image(this.id)>
+                <img src="../static/1.jpg">
+            </div>
+        </div>
         <div class="inputBox">
-            <textarea style="width: 100%;height: 100%" id="msg_edit"></textarea>
+            <div contenteditable="true" id="edit_msg_area"  class="small_div_image"  style="height: 90%;width: 100%"></div>
         </div>
         <div id="div_send">
             <div style="right: 8%; top:40%; position: absolute">
@@ -271,14 +305,16 @@
                     var tags = new Array();
                     var a = 1;
                     tags[0] = list[0].friend_tag;
-                    for (var i = 0; i < list.length; i++) {
+                    for (var i = 0; i < list.length; i++) {  // 添加分组
                         for (var j = 0; j < a; j++) {
                             if (list[i].friend_tag == tags[j]) {
                                 if (i == 0) {
                                     $('#show_friends').append('<div>' +
-                                        '<div class="list-group" id="' + list[i].friend_tag + '">' +
-                                        '<div class="list-group-item friends_tag" id="' + list[i].friend_tag + '" ondblclick="change_name(this.id)">' +
-                                        '<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> ' + list[i].friend_tag + '分组</div>' +
+                                        '<div class="list-group" id="' + list[i].friend_tag + '">'
+                                        + '<div class="list-group-item friends_tag" id="' + list[i].friend_tag
+                                        + '" ondblclick="change_name(this.id)">'
+                                        + '<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> '
+                                        + list[i].friend_tag + '分组</div>' +
                                         '</div>' + '</div>'
                                     );
                                 } else {
@@ -290,7 +326,8 @@
                                 $('#show_friends').append('' +
                                     '<div class ="list-group" id="' + list[i].friend_tag + '">' +
                                     '<div class="list-group-item friends_tag" id="' + list[i].friend_tag + '" >' +
-                                    '<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> ' + list[i].friend_tag + '分组</div>' +
+                                    '<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> '
+                                    + list[i].friend_tag + '分组</div>' +
                                     '</div>');
                             }
                         }
@@ -304,9 +341,13 @@
                                 'id': list[k].friend_id
                             },
                             success: function (res) {
-                                if (res.status == 0) {
+                                if (res.status == 0) {  // 添加好友
                                     name = res.data.user_name;
-                                    $("#" + list[k].friend_tag).append('<div class="friend"  id="' + list[k].friend_id + '" value="' + list[k].room_id + '" onclick="get_chat(this.id);" ondblclick="change_friend_tag(this.id);">' + name + '</div>');
+                                    $("#" + list[k].friend_tag).append('<div class="friend"  id="' + list[k].friend_id
+                                        + '" value="' + list[k].room_id
+                                        + '" onclick="get_chat(this.id);" ondblclick="change_friend_tag(this.id);">'
+                                        + name
+                                        + '<div class="btn-group btn-group-xs" role="group" aria-label="...">...</div></div>');
                                 } else {
                                     alert(res.msg)
                                 }
@@ -366,6 +407,7 @@
                 success: function (res) {
                     if (res.status == 0) {
                         chat_name = res.data.user_name
+                        window.localStorage.setItem('friend_name', chat_name)
                         $('#div_paper').replaceWith("<div class='paper' id='div_paper'><div class='app-title' id='div_app_title'>" + chat_name + "</div></div>");
                     }
                 },
@@ -416,22 +458,36 @@
     }
 
     function send() {
+        console.log($('#edit_msg_area').html())
         socket.emit('send event', {
-            'msg': $('#msg_edit').val(),
+            'msg': $('#edit_msg_area').html(),
             'room_id': window.localStorage.getItem('room_id')
         });
+        $('#edit_msg_area').replaceWith('<div contentEditable="true" id="edit_msg_area" className="small_div_image"' +
+                                             'style="height: 90%;width: 100%"></div>')
     }
 
     socket.on('receive event', function (data) {
+        console.log('data ', data)
         receive_user_name = data.user_name
         receive_msg = data.message
         addMessageFromSelf(receive_user_name, receive_msg)
     });
 
     function addMessageFromSelf(user_name, message) {
-        $("#div_paper").append('<div class = "my-messages">' + user_name + ": " + message + '</div>');
-        // TODO show on each side.
-
+        if (window.localStorage.getItem('friend_name') === user_name) {
+            $("#div_paper").append('<div class = "messages">' +'<div class="friend_message show_image well well-sm">'+
+                message + '</div>'+'<div class="clear">'+'</div>'+'</div><br>')
+        } else {
+            $("#div_paper").append('<div class = "messages">' +'<div class="my_message show_image well well-sm">'
+                + message +'</div>'+'<div class="clear">'+'</div>'+'</div><br>')
+        }
     }
+
+    function add_image(id) {
+        alert(id);
+        $('#edit_msg_area').append('<div class="small_div_image">'+' <img src="'+id+'">'+'</div>');
+    }
+
 </script>
 </html>

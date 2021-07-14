@@ -43,19 +43,31 @@ def connet(data):
 
 
 @socketio.on('send event')
-def pair_chat(data):
-    print('data ', data)
+def msg_chat(data):
+    print('msg data ', data)
     user_name = session.get('user_name')
     msg = data['msg']
     room_id = data['room_id']
-
     ret_data = {
         'user_name': user_name,
         'message': msg
     }
     emit('receive event', ret_data, broadcast=True, to=room_id)
+    print('sent data ', ret_data)
+
+
+@socketio.on('seimg event')
+def img_chat(data):
+    print('img data ', data)
+    user_name = session.get('user_name')
+    img_url = data['img_url']
+    room_id = data['room_id']
+    ret_data = {
+        'user_name': user_name,
+        'img_url': img_url
+    }
+    emit('reimg event', ret_data, broadcast=True, to=room_id)
 
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000)
-    # app.run(host='0.0.0.0', port=5000)
